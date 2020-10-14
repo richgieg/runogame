@@ -23,7 +23,7 @@ const config = {
     },
     plugins: [
         new ExtraWatchWebpackPlugin({
-            files: ['../shared/**/*.ts'],
+            files: ['../server/shared/**/*.ts'],
         }),
     ],
 };
