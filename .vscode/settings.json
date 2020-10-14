@@ -1,0 +1,5 @@
+{
+    "files.trimTrailingWhitespace": true,
+    "typescript.preferences.quoteStyle": "single",
+    "typescript.tsdk": "./server/node_modules/typescript/lib"
+}
