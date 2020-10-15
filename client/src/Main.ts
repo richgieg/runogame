@@ -1,4 +1,3 @@
-import { Test } from '../../server/shared/Test';
 
 function getServerUrl() {
     switch (window.location.protocol) {
@@ -16,5 +15,5 @@ function getServerUrl() {
 const serverUrl = getServerUrl();
 
 fetch(`${serverUrl}/test`)
-    .then((result) => result.json())
-    .then((result) => document.write((result as Test).test));
+    .then((result) => result.text())
+    .then((result) => document.write(result));
