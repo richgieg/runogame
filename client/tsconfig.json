@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
+    "lib": ["es2019", "dom"],
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

@@ -1,5 +1,7 @@
 type Color = 'blue' | 'green' | 'red' | 'yellow';
 
+type ValueQuantities = { [value: number]: number };
+
 type NumberCard = {
     readonly kind: 'number',
     readonly id: number,
@@ -56,20 +58,25 @@ export class Deck {
 
         function generateColorCards(color: Color): readonly (NumberCard | DrawTwoCard | ReverseCard | SkipCard)[] {
             return [
-                ...generateNumberCards(color),
+                ...generateNumberCards(color, { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 }),
                 ...generateDrawTwoCards(color),
                 ...generateReverseCards(color),
                 ...generateSkipCards(color),
             ];
         }
 
-        function generateNumberCards(color: Color): readonly NumberCard[] {
-            return [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9].map(value => ({
-                kind: 'number',
-                color,
-                value,
-                id: id++,
-            }));
+        function generateNumberCards(color: Color, valueQuantities: ValueQuantities): readonly NumberCard[] {
+            const cards: NumberCard[] = Object.keys(valueQuantities)
+                .map(valueString => Number(valueString))
+                .sort((a, b) => a - b)
+                .flatMap(value =>
+                    [...Array(valueQuantities[value])].map(_ => ({
+                        kind: 'number',
+                        color,
+                        value,
+                        id: id++,
+                    })));
+            return cards;
         }
 
         function generateDrawTwoCards(color: Color): readonly DrawTwoCard[] {
