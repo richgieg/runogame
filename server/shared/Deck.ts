@@ -94,32 +94,35 @@ export class Deck {
         }
 
         function generateNumberCards(color: Color, valueQuantities: ColorCardQuantities['number']): readonly NumberCard[] {
-            const cards: NumberCard[] = Object.keys(valueQuantities)
+            return Object.keys(valueQuantities)
                 .map(valueString => Number(valueString))
                 .sort((a, b) => a - b)
                 .flatMap(value =>
-                    [...Array(valueQuantities[value])].map(_ => ({ kind: 'number', color, value, id: id++ })));
-            return cards;
+                    generateObjects(valueQuantities[value], () => ({ kind: 'number', color, value, id: id++ })));
         }
 
         function generateDrawTwoCards(color: Color, quantity: number): readonly DrawTwoCard[] {
-            return [...Array(quantity)].map(_ => ({ kind: 'drawTwo', color, id: id++ }));
+            return generateObjects(quantity, () => ({ kind: 'drawTwo', color, id: id++ }));
         }
 
         function generateReverseCards(color: Color, quantity: number): readonly ReverseCard[] {
-            return [...Array(quantity)].map(_ => ({ kind: 'reverse', color, id: id++ }));
+            return generateObjects(quantity, () => ({ kind: 'reverse', color, id: id++ }));
         }
 
         function generateSkipCards(color: Color, quantity: number): readonly SkipCard[] {
-            return [...Array(quantity)].map(_ => ({ kind: 'skip', color, id: id++ }));
+            return generateObjects(quantity, () => ({ kind: 'skip', color, id: id++ }));
         }
 
         function generateWildNoDrawCards(quantity: number): readonly WildNoDrawCard[] {
-            return [...Array(quantity)].map(_ => ({ kind: 'wildNoDraw', id: id++ }));
+            return generateObjects(quantity, () => ({ kind: 'wildNoDraw', id: id++ }));
         }
 
         function generateWildDrawFourCards(quantity: number): readonly WildDrawFourCard[] {
-            return [...Array(quantity)].map(_ => ({ kind: 'wildDrawFour', id: id++ }));
+            return generateObjects(quantity, () => ({ kind: 'wildDrawFour', id: id++ }));
+        }
+
+        function generateObjects<T>(quantity: number, maker: () => T): T[] {
+            return [...Array(quantity)].map(maker);
         }
 
     }
