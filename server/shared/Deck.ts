@@ -1,6 +1,13 @@
 type Color = 'blue' | 'green' | 'red' | 'yellow';
 
-type ValueQuantities = { [value: number]: number };
+type ColorCardQuantities = {
+    number: {
+        [value: number]: number,
+    },
+    drawTwo: number,
+    reverse: number,
+    skip: number,
+};
 
 type NumberCard = {
     readonly kind: 'number',
@@ -37,7 +44,8 @@ type WildDrawFourCard = {
     readonly kind: 'wildDrawFour',
 };
 
-type Card = NumberCard | DrawTwoCard | ReverseCard | SkipCard | WildNoDrawCard | WildDrawFourCard;
+type ColorCard = NumberCard | DrawTwoCard | ReverseCard | SkipCard;
+type Card = ColorCard | WildNoDrawCard | WildDrawFourCard;
 
 export class Deck {
 
@@ -48,60 +56,70 @@ export class Deck {
         let id = 0;
 
         return [
-            ...generateColorCards('blue'),
-            ...generateColorCards('green'),
-            ...generateColorCards('red'),
-            ...generateColorCards('yellow'),
-            ...generateWildNoDrawCards(),
-            ...generateWildDrawFourCards(),
+            ...generateColorCards('blue', {
+                number: { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 },
+                drawTwo: 2,
+                reverse: 2,
+                skip: 2,
+            }),
+            ...generateColorCards('green', {
+                number: { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 },
+                drawTwo: 2,
+                reverse: 2,
+                skip: 2,
+            }),
+            ...generateColorCards('red', {
+                number: { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 },
+                drawTwo: 2,
+                reverse: 2,
+                skip: 2,
+            }),
+            ...generateColorCards('yellow', {
+                number: { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 },
+                drawTwo: 2,
+                reverse: 2,
+                skip: 2,
+            }),
+            ...generateWildNoDrawCards(4),
+            ...generateWildDrawFourCards(4),
         ];
 
-        function generateColorCards(color: Color): readonly (NumberCard | DrawTwoCard | ReverseCard | SkipCard)[] {
+        function generateColorCards(color: Color, quantities: ColorCardQuantities): readonly ColorCard[] {
             return [
-                ...generateNumberCards(color, { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 }),
-                ...generateDrawTwoCards(color),
-                ...generateReverseCards(color),
-                ...generateSkipCards(color),
+                ...generateNumberCards(color, quantities.number),
+                ...generateDrawTwoCards(color, quantities.drawTwo),
+                ...generateReverseCards(color, quantities.reverse),
+                ...generateSkipCards(color, quantities.skip),
             ];
         }
 
-        function generateNumberCards(color: Color, valueQuantities: ValueQuantities): readonly NumberCard[] {
+        function generateNumberCards(color: Color, valueQuantities: ColorCardQuantities['number']): readonly NumberCard[] {
             const cards: NumberCard[] = Object.keys(valueQuantities)
                 .map(valueString => Number(valueString))
                 .sort((a, b) => a - b)
                 .flatMap(value =>
-                    [...Array(valueQuantities[value])].map(_ => ({
-                        kind: 'number',
-                        color,
-                        value,
-                        id: id++,
-                    })));
+                    [...Array(valueQuantities[value])].map(_ => ({ kind: 'number', color, value, id: id++ })));
             return cards;
         }
 
-        function generateDrawTwoCards(color: Color): readonly DrawTwoCard[] {
-            return (['drawTwo', 'drawTwo'] as const)
-                .map(kind => ({ kind, color, id: id++ }));
+        function generateDrawTwoCards(color: Color, quantity: number): readonly DrawTwoCard[] {
+            return [...Array(quantity)].map(_ => ({ kind: 'drawTwo', color, id: id++ }));
         }
 
-        function generateReverseCards(color: Color): readonly ReverseCard[] {
-            return (['reverse', 'reverse'] as const)
-                .map(kind => ({ kind, color, id: id++ }));
+        function generateReverseCards(color: Color, quantity: number): readonly ReverseCard[] {
+            return [...Array(quantity)].map(_ => ({ kind: 'reverse', color, id: id++ }));
         }
 
-        function generateSkipCards(color: Color): readonly SkipCard[] {
-            return (['skip', 'skip'] as const)
-                .map(kind => ({ kind, color, id: id++ }));
+        function generateSkipCards(color: Color, quantity: number): readonly SkipCard[] {
+            return [...Array(quantity)].map(_ => ({ kind: 'skip', color, id: id++ }));
         }
 
-        function generateWildNoDrawCards(): readonly WildNoDrawCard[] {
-            return (['wildNoDraw', 'wildNoDraw', 'wildNoDraw', 'wildNoDraw'] as const)
-                .map(kind => ({ kind, id: id++ }));
+        function generateWildNoDrawCards(quantity: number): readonly WildNoDrawCard[] {
+            return [...Array(quantity)].map(_ => ({ kind: 'wildNoDraw', id: id++ }));
         }
 
-        function generateWildDrawFourCards(): readonly WildDrawFourCard[] {
-            return (['wildDrawFour', 'wildDrawFour', 'wildDrawFour', 'wildDrawFour'] as const)
-                .map(kind => ({ kind, id: id++ }));
+        function generateWildDrawFourCards(quantity: number): readonly WildDrawFourCard[] {
+            return [...Array(quantity)].map(_ => ({ kind: 'wildDrawFour', id: id++ }));
         }
 
     }
