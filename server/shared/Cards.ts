@@ -1,20 +1,24 @@
 type Color = 'blue' | 'green' | 'red' | 'yellow';
 
 type CardQuantities = {
-    readonly colors: {
-        readonly [C in Color]?: ColorCardQuantities;
-    },
-    readonly wildNoDraw: number;
-    readonly wildDrawFour: number;
-}
+    readonly colors?: ColorCardQuantitiesMap,
+    readonly wildNoDraw?: number;
+    readonly wildDrawFour?: number;
+};
+
+type ColorCardQuantitiesMap = {
+    readonly [C in Color]?: ColorCardQuantities;
+};
 
 type ColorCardQuantities = {
-    readonly number: {
-        readonly [value: number]: number,
-    },
-    readonly drawTwo: number,
-    readonly reverse: number,
-    readonly skip: number,
+    readonly number?: NumberCardValueQuantities;
+    readonly drawTwo?: number,
+    readonly reverse?: number,
+    readonly skip?: number,
+};
+
+type NumberCardValueQuantities = {
+    readonly [value: number]: number,
 };
 
 type NumberCard = {
@@ -57,32 +61,63 @@ type ColorCard = NumberCard | ActionCard;
 type WildCard = WildNoDrawCard | WildDrawFourCard;
 type Card = ColorCard | WildCard;
 
-export function generateCards(quantities: CardQuantities): readonly Card[] {
+const defaultQuantities: CardQuantities = {
+    colors: {
+        blue: {
+            number: { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 },
+            drawTwo: 2,
+            reverse: 2,
+            skip: 2,
+        },
+        green: {
+            number: { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 },
+            drawTwo: 2,
+            reverse: 2,
+            skip: 2,
+        },
+        red: {
+            number: { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 },
+            drawTwo: 2,
+            reverse: 2,
+            skip: 2,
+        },
+        yellow: {
+            number: { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 },
+            drawTwo: 2,
+            reverse: 2,
+            skip: 2,
+        },
+    },
+    wildNoDraw: 4,
+    wildDrawFour: 4,
+};
+
+export function generateCards(quantities = defaultQuantities): readonly Card[] {
 
     let id = 0;
 
     return [
-        ...generateAllColorCards(quantities.colors),
-        ...generateWildCards('wildNoDraw', quantities.wildNoDraw),
-        ...generateWildCards('wildDrawFour', quantities.wildDrawFour),
+        ...generateAllColorCards(quantities.colors ?? {}),
+        ...generateWildCards('wildNoDraw', quantities.wildNoDraw ?? 0),
+        ...generateWildCards('wildDrawFour', quantities.wildDrawFour ?? 0),
     ];
 
-    function generateAllColorCards(colorQuantitiesMap: CardQuantities['colors']): readonly ColorCard[] {
-        return Object.entries(colorQuantitiesMap)
+    function generateAllColorCards(colorCardQuantitiesMap: ColorCardQuantitiesMap): readonly ColorCard[] {
+        return Object.entries(colorCardQuantitiesMap)
             .sort((a, b) => a[0].localeCompare(b[0]))
-            .flatMap(entry => entry[1] ? generateCardsOfColor(entry[0] as Color, entry[1]) : []);
+            .flatMap(entry => generateCardsOfColor(entry[0] as Color, entry[1]));
     }
 
-    function generateCardsOfColor(color: Color, quantities: ColorCardQuantities): readonly ColorCard[] {
+    function generateCardsOfColor(color: Color, quantities: ColorCardQuantities | undefined): readonly ColorCard[] {
         return [
-            ...generateNumberCards(color, quantities.number),
-            ...generateActionCards('drawTwo', color, quantities.drawTwo),
-            ...generateActionCards('reverse', color, quantities.reverse),
-            ...generateActionCards('skip', color, quantities.skip),
+            ...generateNumberCards(color, quantities?.number ?? {}),
+            ...generateActionCards('drawTwo', color, quantities?.drawTwo ?? 0),
+            ...generateActionCards('reverse', color, quantities?.reverse ?? 0),
+            ...generateActionCards('skip', color, quantities?.skip ?? 0),
         ];
     }
 
-    function generateNumberCards(color: Color, valueQuantities: ColorCardQuantities['number']): readonly NumberCard[] {
+    function generateNumberCards(color: Color, valueQuantities: NumberCardValueQuantities): readonly NumberCard[] {
         return Object.keys(valueQuantities)
             .map(valueString => Number(valueString))
             .sort((a, b) => a - b)

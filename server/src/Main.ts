@@ -8,36 +8,7 @@ const app = express();
 app.use(cors());
 
 app.get('/test', (_, res) => {
-    const cards = generateCards({
-        colors: {
-            blue: {
-                number: { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 },
-                drawTwo: 2,
-                reverse: 2,
-                skip: 2,
-            },
-            green: {
-                number: { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 },
-                drawTwo: 2,
-                reverse: 2,
-                skip: 2,
-            },
-            red: {
-                number: { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 },
-                drawTwo: 2,
-                reverse: 2,
-                skip: 2,
-            },
-            yellow: {
-                number: { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 },
-                drawTwo: 2,
-                reverse: 2,
-                skip: 2,
-            },
-        },
-        wildNoDraw: 4,
-        wildDrawFour: 4,
-    });
+    const cards = generateCards();
     res.send(cards);
 });
 
