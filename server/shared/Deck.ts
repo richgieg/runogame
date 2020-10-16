@@ -100,19 +100,19 @@ export class Deck {
                 .map(valueString => Number(valueString))
                 .sort((a, b) => a - b)
                 .flatMap(value =>
-                    generateObjects(valueQuantities[value], () => ({ kind: 'number', color, value, id: id++ })));
+                    generateEntities(valueQuantities[value], { kind: 'number', color, value }));
         }
 
         function generateActionCards(kind: ActionCard['kind'], color: Color, quantity: number): readonly ActionCard[] {
-            return generateObjects(quantity, () => ({ kind, color, id: id++ }));
+            return generateEntities(quantity, { kind, color });
         }
 
         function generateWildCards(kind: WildCard['kind'], quantity: number): readonly WildCard[] {
-            return generateObjects(quantity, () => ({ kind, id: id++ }));
+            return generateEntities(quantity, { kind });
         }
 
-        function generateObjects<T>(quantity: number, factory: () => T): T[] {
-            return [...Array(quantity)].map(factory);
+        function generateEntities<T>(quantity: number, blueprint: T) {
+            return [...Array(quantity)].map(() => ({ ...blueprint, id: id++ }));
         }
 
     }
