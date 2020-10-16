@@ -1,12 +1,20 @@
 type Color = 'blue' | 'green' | 'red' | 'yellow';
 
-type ColorCardQuantities = {
-    number: {
-        [value: number]: number,
+type CardQuantities = {
+    readonly colors: {
+        readonly [C in Color]?: ColorCardQuantities;
     },
-    drawTwo: number,
-    reverse: number,
-    skip: number,
+    readonly wildNoDraw: number;
+    readonly wildDrawFour: number;
+}
+
+type ColorCardQuantities = {
+    readonly number: {
+        readonly [value: number]: number,
+    },
+    readonly drawTwo: number,
+    readonly reverse: number,
+    readonly skip: number,
 };
 
 type NumberCard = {
@@ -49,45 +57,28 @@ type ColorCard = NumberCard | ActionCard;
 type WildCard = WildNoDrawCard | WildDrawFourCard;
 type Card = ColorCard | WildCard;
 
-export function generateCards(): readonly Card[] {
+export function generateCards(quantities: CardQuantities): readonly Card[] {
 
     let id = 0;
 
     return [
-        ...generateColorCards('blue', {
-            number: { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 },
-            drawTwo: 2,
-            reverse: 2,
-            skip: 2,
-        }),
-        ...generateColorCards('green', {
-            number: { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 },
-            drawTwo: 2,
-            reverse: 2,
-            skip: 2,
-        }),
-        ...generateColorCards('red', {
-            number: { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 },
-            drawTwo: 2,
-            reverse: 2,
-            skip: 2,
-        }),
-        ...generateColorCards('yellow', {
-            number: { 0: 1, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2, 8: 2, 9: 2 },
-            drawTwo: 2,
-            reverse: 2,
-            skip: 2,
-        }),
-        ...generateWildCards('wildNoDraw', 4),
-        ...generateWildCards('wildDrawFour', 4),
+        ...generateAllColorCards(quantities.colors),
+        ...generateWildCards('wildNoDraw', quantities.wildNoDraw),
+        ...generateWildCards('wildDrawFour', quantities.wildDrawFour),
     ];
 
-    function generateColorCards(color: Color, quantities: ColorCardQuantities): readonly ColorCard[] {
+    function generateAllColorCards(colorQuantitiesMap: CardQuantities['colors']): readonly ColorCard[] {
+        return Object.entries(colorQuantitiesMap)
+            .sort((a, b) => a[0].localeCompare(b[0]))
+            .flatMap(entry => entry[1] ? generateCardsOfColor(entry[0] as Color, entry[1]) : []);
+    }
+
+    function generateCardsOfColor(color: Color, quantities: ColorCardQuantities): readonly ColorCard[] {
         return [
             ...generateNumberCards(color, quantities.number),
             ...generateActionCards('drawTwo', color, quantities.drawTwo),
             ...generateActionCards('reverse', color, quantities.reverse),
-            ...generateActionCards('skip', color, quantities.drawTwo),
+            ...generateActionCards('skip', color, quantities.skip),
         ];
     }
 
