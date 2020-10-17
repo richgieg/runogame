@@ -105,10 +105,10 @@ export function generateCards(quantities = defaultQuantities): readonly Card[] {
     function generateAllColorCards(colorCardQuantitiesMap: ColorCardQuantitiesMap): readonly ColorCard[] {
         return Object.entries(colorCardQuantitiesMap)
             .sort((a, b) => a[0].localeCompare(b[0]))
-            .flatMap(entry => generateCardsOfColor(entry[0] as Color, entry[1]));
+            .flatMap(entry => generateColorCards(entry[0] as Color, entry[1]));
     }
 
-    function generateCardsOfColor(color: Color, quantities: ColorCardQuantities | undefined): readonly ColorCard[] {
+    function generateColorCards(color: Color, quantities: ColorCardQuantities | undefined): readonly ColorCard[] {
         return [
             ...generateNumberCards(color, quantities?.number ?? {}),
             ...generateActionCards('drawTwo', color, quantities?.drawTwo ?? 0),
