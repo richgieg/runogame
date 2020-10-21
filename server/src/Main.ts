@@ -8,10 +8,10 @@ const app = express();
 app.use(cors());
 
 app.get('/test', (_, res) => {
-    const cards = generateCards();
-    res.send(cards);
+  const cards = generateCards();
+  res.send(cards);
 });
 
 app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`);
+  console.log(`App listening on port ${PORT}`);
 });

@@ -1,5 +1,7 @@
 {
-    "files.trimTrailingWhitespace": true,
-    "typescript.preferences.quoteStyle": "single",
-    "typescript.tsdk": "./server/node_modules/typescript/lib"
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "prettier.singleQuote": true,
+  "typescript.preferences.quoteStyle": "single",
+  "typescript.tsdk": "./server/node_modules/typescript/lib"
 }
