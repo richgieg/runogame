@@ -127,6 +127,7 @@ export function generateCards(quantities = defaultQuantities): readonly Card[] {
   ): readonly NumberCard[] {
     return Object.keys(valueQuantities)
       .map((valueString) => Number(valueString))
+      .filter((value) => !isNaN(value) && value !== Infinity)
       .sort((a, b) => a - b)
       .flatMap((value) =>
         generateEntities(valueQuantities[value], {
